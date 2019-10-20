@@ -98,12 +98,11 @@ class _LoginOTPState extends State<LoginOTP> {
     if (_nomor.startsWith('0')) {
       _nomor = _nomor.replaceFirst('0', '+62');
     }
-    print(_nomor);
+
     FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: _nomor,
       codeAutoRetrievalTimeout: (s) => _verificationId = s,
       codeSent: (s, [i]) {
-        print('HERE');
         _verificationId = s;
         _controller.clear();
         setState(() {
@@ -111,14 +110,13 @@ class _LoginOTPState extends State<LoginOTP> {
         });
       },
       timeout: Duration(minutes: 1),
-      verificationFailed: (e) => print(e.message),
+      verificationFailed: (e) => _controller.clear(),
       verificationCompleted: (AuthCredential credential) =>
           updateKredensial(credential),
     );
   }
 
   void verifikasiKode() {
-    print('SINI');
     AuthCredential credential = PhoneAuthProvider.getCredential(
       smsCode: _controller.text,
       verificationId: _verificationId,
