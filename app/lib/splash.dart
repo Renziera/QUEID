@@ -9,14 +9,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
-    checkAuth();
   }
 
-  void checkAuth() async {
-    await Future.delayed(Duration(milliseconds: 500));
+  void _checkAuth() async {
+    setState(() {
+      _isLoading = true;
+    });
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     if (user != null) {
       DocumentSnapshot ds = await Firestore.instance
@@ -37,11 +40,33 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          'QUE.ID',
-          style: TextStyle(fontSize: 64),
-        ),
+      backgroundColor: Colors.white,
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          Image.asset('img/splash.png'),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              RaisedButton(
+                padding: EdgeInsets.symmetric(horizontal: 48),
+                color: Colors.white,
+                child: _isLoading
+                    ? SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(),
+                      )
+                    : Text(
+                        'LOG IN',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                onPressed: _isLoading ? null : _checkAuth,
+              ),
+              SizedBox(height: 96),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:queid/page_home.dart';
+import 'package:queid/profile.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
     SizedBox.shrink(),
     SizedBox.shrink(),
     SizedBox.shrink(),
-    SizedBox.shrink(),
+    Profile(),
   ];
 
   @override

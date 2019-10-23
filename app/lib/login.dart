@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:queid/home.dart';
 
 class LoginPIN extends StatefulWidget {
@@ -35,43 +36,62 @@ class _LoginPINState extends State<LoginPIN> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login PIN'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 48),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              _nama,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 24),
-            TextField(
-              controller: _controller,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: 'PIN'),
-              maxLength: 6,
-              obscureText: true,
-            ),
-            RaisedButton(
-              child: Text('LOGIN'),
-              onPressed: () async {
-                if (_controller.text.isEmpty) return;
-
-                if (_pin == _controller.text) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => HomeScreen(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF5191F1),
+              Color(0xFF2A51D2),
+            ],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                _nama ?? '',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Enter Your 4-digit PIN',
+                style: TextStyle(color: Colors.white, fontSize: 32),
+              ),
+              SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 48),
+                child: PinInputTextField(
+                  autoFocus: true,
+                  pinLength: 4,
+                  keyboardType: TextInputType.number,
+                  onSubmit: (pin) {
+                    if (pin.isEmpty) return;
+                    if (pin != _pin) return;
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                        (r) => false);
+                  },
+                  decoration: BoxLooseDecoration(
+                    textStyle: TextStyle(),
+                    strokeColor: Colors.white10,
+                    solidColor: Colors.transparent,
+                    strokeWidth: 32,
+                    radius: Radius.circular(20),
+                    enteredColor: Colors.white,
+                    obscureStyle: ObscureStyle(
+                      isTextObscure: true,
+                      obscureText: ' ',
                     ),
-                    (r) => false,
-                  );
-                }
-              },
-            ),
-          ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -156,7 +176,7 @@ class _LoginOTPState extends State<LoginOTP> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login OTP'),
+        title: Text('Log In'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -166,7 +186,8 @@ class _LoginOTPState extends State<LoginOTP> {
             TextField(
               controller: _controller,
               decoration: InputDecoration(
-                hintText: _isKode ? 'Kode SMS' : 'Nomor Handphone',
+                hintText:
+                    _isKode ? 'Enter OTP Code' : 'Enter your mobile number',
               ),
               textAlign: TextAlign.center,
               keyboardType:
@@ -175,7 +196,7 @@ class _LoginOTPState extends State<LoginOTP> {
             SizedBox(height: 8),
             RaisedButton(
               onPressed: _isKode ? verifikasiKode : kirimKode,
-              child: Text(_isKode ? 'VERIFIKASI' : 'KIRIM KODE'),
+              child: Text(_isKode ? 'VERIFY  OTP' : 'SEND CODE'),
             ),
           ],
         ),
@@ -186,75 +207,38 @@ class _LoginOTPState extends State<LoginOTP> {
 
 class DetailPengguna extends StatelessWidget {
   final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _pinController = TextEditingController();
-  final TextEditingController _pin2Controller = TextEditingController();
+  final TextEditingController _nikController = TextEditingController();
+  final TextEditingController _alamatController = TextEditingController();
+  final TextEditingController _npwpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input PIN'),
+        title: Text('Register'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 48),
+      body: SingleChildScrollView(child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              controller: _namaController,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(hintText: 'Nama Lengkap'),
-            ),
-            SizedBox(height: 24),
-            TextField(
-              controller: _pinController,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: 'PIN Baru'),
-              maxLength: 6,
-              obscureText: true,
-            ),
-            TextField(
-              controller: _pin2Controller,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: 'Konfirmasi PIN'),
-              maxLength: 6,
-              obscureText: true,
-            ),
-            RaisedButton(
-              child: Text('OK'),
-              onPressed: () async {
-                if (_namaController.text.isEmpty ||
-                    _pinController.text.isEmpty ||
-                    _pin2Controller.text.isEmpty) return;
-
-                if (_pinController.text != _pin2Controller.text) return;
-
-                if (_pinController.text.length != 6) return;
-
-                FirebaseUser user = await FirebaseAuth.instance.currentUser();
-                await Firestore.instance
-                    .collection('pengguna')
-                    .document(user.uid)
-                    .setData({
-                  'nama': _namaController.text,
-                  'nomor': user.phoneNumber,
-                  'pin': _pinController.text,
-                });
-
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreen(),
-                  ),
-                  (r) => false,
-                );
-              },
-            ),
+            TextFormField(),
           ],
         ),
-      ),
+      )),
+    );
+  }
+}
+
+class CreatePIN extends StatefulWidget {
+  @override
+  _CreatePINState createState() => _CreatePINState();
+}
+
+class _CreatePINState extends State<CreatePIN> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      
     );
   }
 }
