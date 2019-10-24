@@ -33,3 +33,18 @@ const MaterialColor BIRU = const MaterialColor(0xFF4370E1, const {
   800: Color.fromRGBO(67, 112, 225, .9),
   900: Color.fromRGBO(67, 112, 225, 1),
 });
+
+const List<String> BULAN = [
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
+];

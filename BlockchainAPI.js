@@ -9,6 +9,12 @@ const contract = new web3.eth.Contract(abi, contractAddress);
 const app = express();
 const port = 3000;
 
+const options = {
+    from: '0x61421EE987A668F0D498F97C9DaC8c8a5a74f65c',
+    gas: 6721975,
+    gasPrice: 20000000000,
+};
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,7 +34,7 @@ app.post('/tambahTransaksi', (req, res) => {
         req.body.rekTujuan,
         req.body.nominal,
         ((new Date()).getTime() / 1000),
-    ).call((err, result) => res.send(result));
+    ).send(options, (err, result) => res.send(result));
 });
 
 app.post('/tambahIdentitas', (req, res) => {
@@ -40,7 +46,7 @@ app.post('/tambahIdentitas', (req, res) => {
         req.body.alamat,
         req.body.tglLahir,
         req.body.npwp,
-    ).call((err, result) => res.send(result));
+    ).send(options, (err, result) => res.send(result));
 });
 
 app.post('/lihatTransaksi', (req, res) => {
