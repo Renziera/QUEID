@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:queid/main.dart';
+import 'package:queid/mutation.dart';
 import 'package:queid/page_home.dart';
 import 'package:queid/profile.dart';
+import 'package:queid/scan.dart';
+import 'package:queid/wallet.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,9 +16,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     HomePage(),
+    Mutation(),
     SizedBox.shrink(),
-    SizedBox.shrink(),
-    SizedBox.shrink(),
+    Wallet(),
     Profile(),
   ];
 
@@ -22,9 +26,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('QUE.ID'),
+        title: Text('QUE.ID', style: TextStyle(fontWeight: FontWeight.bold)),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.notifications_none),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: _pages[_index],
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: BIRU,
+        child: Image.asset('img/ic_scan.png', height: 24, width: 24),
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => ScanQR()));
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _index,
         onTap: (x) {
@@ -32,28 +55,44 @@ class _HomeScreenState extends State<HomeScreen> {
             _index = x;
           });
         },
-        selectedItemColor: Colors.blue,
+        selectedItemColor: BIRU,
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Image.asset(
+              'img/ic_home.png',
+              height: 24,
+              width: 24,
+            ),
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.monetization_on),
-            title: Text('Sesuatu'),
+            icon: Image.asset(
+              'img/ic_mutation.png',
+              height: 24,
+              width: 24,
+            ),
+            title: Text('Mutation'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            title: Text('Entah'),
+            icon: SizedBox.shrink(),
+            title: SizedBox.shrink(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.airplanemode_active),
-            title: Text('Pesawat'),
+            icon: Image.asset(
+              'img/ic_wallet.png',
+              height: 24,
+              width: 24,
+            ),
+            title: Text('Wallet'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            title: Text('Akun'),
+            icon: Image.asset(
+              'img/ic_profile.png',
+              height: 24,
+              width: 24,
+            ),
+            title: Text('Profile'),
           ),
         ],
       ),

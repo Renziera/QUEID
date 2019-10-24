@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -230,6 +232,7 @@ class _DetailPenggunaState extends State<DetailPengguna> {
       'alamat': _alamatController.text,
       'npwp': _npwpController.text,
       'pin': _pin,
+      'poin': (Random().nextInt(3000) + 1000),
       'created_at': FieldValue.serverTimestamp(),
     });
     Navigator.of(context)
