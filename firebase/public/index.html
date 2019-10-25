@@ -16,13 +16,16 @@
   <script>
     const functions = firebase.functions();
     const listBank = functions.httpsCallable('listBank');
+    const listMutasi = functions.httpsCallable('listMutasi');
 
-    async function panggilListBank(){
+    async function fetchData() {
       let result = await listBank();
+      console.log(result);
+      result = await listMutasi();
       console.log(result);
     }
 
-    panggilListBank();
+    fetchData();
   </script>
 </body>
 

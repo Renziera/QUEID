@@ -1,5 +1,8 @@
+const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const request = require('request-promise-native');
+admin.initializeApp();
+const db = admin.firestore();
 
 exports.penggunaBaru = functions.firestore.document('pengguna/{id}').onCreate(async (snap, context) => {
     const data = snap.data();
@@ -25,7 +28,7 @@ exports.penggunaBaru = functions.firestore.document('pengguna/{id}').onCreate(as
 exports.transaksiMasuk = functions.firestore.document('/pengguna/{pengguna_id}/mutasi/{id}').onCreate(async (snap, context) => {
     const data = snap.data();
 
-    if(!data.send) return;
+    if (!data.send) return;
 
     try {
         let result = await request.post('http://blockchain.que-id.com/tambahTransaksi', {
@@ -42,4 +45,14 @@ exports.transaksiMasuk = functions.firestore.document('/pengguna/{pengguna_id}/m
     } catch (error) {
 
     }
+});
+
+exports.listBank = functions.https.onCall(async (data, context) => {
+    let result = await db.collectionGroup('bank').orderBy('created_at', 'desc').get();
+    return result.docs.map(doc => doc.data());
+});
+
+exports.listMutasi = functions.https.onCall(async (data, context) => {
+    let result = await db.collectionGroup('mutasi').orderBy('waktu', 'desc').get();
+    return result.docs.map(doc => doc.data());
 });
