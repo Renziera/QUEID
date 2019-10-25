@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:queid/points.dart';
+import 'package:queid/transfer.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -98,7 +99,10 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     FlatButton(
                       child: Image.asset('img/transfer.png'),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Transfer()));
+                      },
                     ),
                     Text('Transfer'),
                   ],
