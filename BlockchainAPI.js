@@ -33,7 +33,7 @@ app.post('/tambahTransaksi', (req, res) => {
         req.body.rekAsal,
         req.body.rekTujuan,
         req.body.nominal,
-        ((new Date()).getTime() / 1000),
+        Math.trunc((new Date()).getTime() / 1000),
     ).send(options, (err, result) => res.send(result));
 });
 

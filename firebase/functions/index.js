@@ -21,3 +21,25 @@ exports.penggunaBaru = functions.firestore.document('pengguna/{id}').onCreate(as
 
     }
 });
+
+exports.transaksiMasuk = functions.firestore.document('/pengguna/{pengguna_id}/mutasi/{id}').onCreate(async (snap, context) => {
+    const data = snap.data();
+
+    if(!data.send) return;
+
+    try {
+        let result = await request.post('http://blockchain.que-id.com/tambahTransaksi', {
+            form: {
+                id: snap.id,
+                bankAsal: data.bank_asal,
+                bankTujuan: data.bank_tujuan,
+                rekAsal: data.rek_asal.toString(),
+                rekTujuan: data.rek_tujuan.toString(),
+                nominal: data.nominal,
+            },
+        });
+        await snap.ref.update({ transaction: result });
+    } catch (error) {
+
+    }
+});
