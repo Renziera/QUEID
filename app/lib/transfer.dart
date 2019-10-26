@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pin_input_text_field/pin_input_text_field.dart';
 
 class Transfer extends StatefulWidget {
   @override
@@ -162,7 +163,7 @@ class _TransferNominalState extends State<TransferNominal> {
 
   @override
   void initState() {
-    _body = _buildDetail();
+    _body = _buildPIN();
     super.initState();
   }
 
@@ -226,7 +227,61 @@ class _TransferNominalState extends State<TransferNominal> {
     );
   }
 
-  Center _buildBerhasil(BuildContext context) {
+  Widget _buildPIN() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF5191F1),
+            Color(0xFF2A51D2),
+          ],
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 16),
+            Text(
+              'Enter your bank PIN',
+              style: TextStyle(color: Colors.white, fontSize: 32),
+            ),
+            SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: PinInputTextField(
+                autoFocus: true,
+                pinLength: 6,
+                keyboardType: TextInputType.number,
+                onSubmit: (pin) {
+                  if(pin != widget.asal.data['pin']) return;
+                  setState(() {
+                   _body = _buildDetail(); 
+                  });
+                },
+                decoration: BoxLooseDecoration(
+                  textStyle: TextStyle(fontSize: 1),
+                  strokeColor: Colors.white10,
+                  solidColor: Colors.transparent,
+                  strokeWidth: 20,
+                  radius: Radius.circular(20),
+                  enteredColor: Colors.white,
+                  obscureStyle: ObscureStyle(
+                    isTextObscure: true,
+                    obscureText: ' ',
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBerhasil(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
