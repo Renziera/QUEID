@@ -50,11 +50,30 @@ class _MutationState extends State<Mutation> {
                       DateTime waktu = ts.toDate();
                       return ListTile(
                         isThreeLine: true,
-                        onTap: () {},
-                        title: Text((doc.data['send'] ? 'Send' : 'Receive') +
-                            ' Rp${doc.data['nominal']},00'),
-                        subtitle: Text(
-                            'From ${doc.data['nama_asal']}\n${doc.data['bank_asal']} ${doc.data['rek_asal']}\nTo ${doc.data['nama_tujuan']}\n${doc.data['bank_tujuan']} ${doc.data['rek_tujuan']}\n${waktu.day} ${BULAN[waktu.month - 1]} ${waktu.year} ${waktu.hour}:${waktu.minute}:${waktu.second}\n'),
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Text(
+                                      'From ${doc.data['nama_asal']}\n${doc.data['bank_asal']}\n${doc.data['rek_asal']}\n\nTo ${doc.data['nama_tujuan']}\n${doc.data['bank_tujuan']}\n${doc.data['rek_tujuan']}\n\n${waktu.day} ${BULAN[waktu.month - 1]} ${waktu.year} ${waktu.hour}:${waktu.minute}:${waktu.second}'),
+                                );
+                              });
+                        },
+                        leading: doc.data['send']
+                            ? Image.asset('img/ic_send.png')
+                            : Image.asset('img/ic_receive.png'),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(doc.data['send'] ? 'Send' : 'Receive', style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text('Rp${doc.data['nominal']},00', style: TextStyle(color: BIRU),),
+                          ],
+                        ),
+                        subtitle: Text((doc.data['send']
+                                ? doc.data['bank_asal']
+                                : doc.data['bank_tujuan']) +
+                            '\n${waktu.day} ${BULAN[waktu.month - 1]} ${waktu.year}'),
                       );
                     }).toList(),
                   );

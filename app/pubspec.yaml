@@ -74,6 +74,8 @@ flutter:
     - img/card_naruto.png
     - img/card_sasuke.png
     - img/card_hokage.png
+    - img/ic_receive.png
+    - img/ic_send.png
     
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
