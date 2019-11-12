@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
+import 'package:queid/scan.dart';
 
 class Transfer extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class Transfer extends StatefulWidget {
 
 class _TransferState extends State<Transfer> {
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   String _bankTujuan = 'Bank NARUTO';
 
@@ -19,57 +21,83 @@ class _TransferState extends State<Transfer> {
       appBar: AppBar(
         title: Text('Transfer'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text('Pilih bank tujuan'),
-            DropdownButton<String>(
-              value: _bankTujuan,
-              items: ['Bank NARUTO', 'Bank SASUKE', 'Bank HOKAGE'].map((s) {
-                return DropdownMenuItem(
-                  value: s,
-                  child: Text(s),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _bankTujuan = value;
-                });
-              },
-            ),
-            SizedBox(height: 24),
-            Text('Nomor rekening penerima'),
-            TextField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 24),
-            RaisedButton(
-              child: Text('OK'),
-              onPressed: () async {
-                if (_controller.text.isEmpty) return;
-                int noRek = int.parse(_controller.text);
-                QuerySnapshot snapshot = await Firestore.instance
-                    .collectionGroup('bank')
-                    .where('bank', isEqualTo: _bankTujuan)
-                    .where('no_rek', isEqualTo: noRek)
-                    .limit(1)
-                    .getDocuments();
-                if (snapshot.documents.isEmpty) return;
-                FirebaseUser user = await FirebaseAuth.instance.currentUser();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => PilihRekAsal(
-                      tujuan: snapshot.documents.first,
-                      uid: user.uid,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text('Pilih bank tujuan'),
+              DropdownButton<String>(
+                value: _bankTujuan,
+                items: ['Bank NARUTO', 'Bank SASUKE', 'Bank HOKAGE'].map((s) {
+                  return DropdownMenuItem(
+                    value: s,
+                    child: Text(s),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _bankTujuan = value;
+                  });
+                },
+              ),
+              SizedBox(height: 24),
+              Text('Nomor rekening penerima'),
+              TextField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+              ),
+              SizedBox(height: 24),
+              RaisedButton(
+                child: Text('TRANSFER REKENING'),
+                onPressed: () async {
+                  if (_controller.text.isEmpty) return;
+                  int noRek = int.parse(_controller.text);
+                  QuerySnapshot snapshot = await Firestore.instance
+                      .collectionGroup('bank')
+                      .where('bank', isEqualTo: _bankTujuan)
+                      .where('no_rek', isEqualTo: noRek)
+                      .limit(1)
+                      .getDocuments();
+                  if (snapshot.documents.isEmpty) return;
+                  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => PilihRekAsal(
+                        tujuan: snapshot.documents.first,
+                        uid: user.uid,
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                  );
+                },
+              ),
+              SizedBox(height: 24),
+              Text('QUEID penerima'),
+              TextField(
+                controller: _usernameController,
+              ),
+              SizedBox(height: 24),
+              RaisedButton(
+                child: Text('TRANSFER QUEID'),
+                onPressed: () async {
+                  if (_usernameController.text.isEmpty) return;
+                  QuerySnapshot snapshot = await Firestore.instance
+                      .collection('pengguna')
+                      .where('username', isEqualTo: _usernameController.text)
+                      .getDocuments();
+                  if (snapshot.documents.isEmpty) return;
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => PilihRekTujuan(
+                        uid: snapshot.documents.first.documentID,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -256,9 +284,9 @@ class _TransferNominalState extends State<TransferNominal> {
                 pinLength: 6,
                 keyboardType: TextInputType.number,
                 onSubmit: (pin) {
-                  if(pin != widget.asal.data['pin']) return;
+                  if (pin != widget.asal.data['pin']) return;
                   setState(() {
-                   _body = _buildDetail(); 
+                    _body = _buildDetail();
                   });
                 },
                 decoration: BoxLooseDecoration(

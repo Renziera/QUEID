@@ -21,14 +21,14 @@ class _ScanQRState extends State<ScanQR> {
             onQRViewCreated: (QRViewController controller) {
               controller.scannedDataStream.listen((data) async {
                 controller.pauseCamera();
-                DocumentSnapshot ds = await Firestore.instance
+                QuerySnapshot qs = await Firestore.instance
                     .collection('pengguna')
-                    .document(data)
-                    .get();
-                if (ds.exists) {
+                    .where('username', isEqualTo: data)
+                    .getDocuments();
+                if (qs.documents.isNotEmpty) {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) =>
-                          PilihRekTujuan(uid: ds.documentID)));
+                          PilihRekTujuan(uid: qs.documents.first.documentID)));
                 } else {
                   controller.resumeCamera();
                 }

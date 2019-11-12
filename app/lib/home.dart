@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         selectedItemColor: BIRU,
         unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(

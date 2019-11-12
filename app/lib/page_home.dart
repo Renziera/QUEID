@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
         .get();
     setState(() {
       _nama = ds.data['nama'];
-      _id = ds.documentID;
+      _id = ds.data['username'] ?? ds.documentID;
     });
   }
 
@@ -61,124 +61,164 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  Image.asset('img/que_card.png'),
-                  Column(
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Stack(
+              alignment: Alignment.centerLeft,
+              children: <Widget>[
+                Image.asset('img/que_card.png'),
+                Padding(
+                  padding: const EdgeInsets.only(left: 36),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
                         'Que ID',
-                        style: TextStyle(fontSize: 8, color: Color(0xFFDC9A13)),
+                        style:
+                            TextStyle(fontSize: 12, color: Color(0xFFDC9A13)),
                       ),
                       Text(
                         _id ?? '',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 32),
                       Text(
+                        'Nama',
+                        style:
+                            TextStyle(fontSize: 12, color: Color(0xFFDC9A13)),
+                      ),
+                      Text(
                         _nama ?? '',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    FlatButton(
-                      child: Image.asset('img/transfer.png'),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Transfer()));
-                      },
-                    ),
-                    Text('Transfer'),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    FlatButton(
-                      child: Image.asset('img/point.png'),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => QuePoints()));
-                      },
-                    ),
-                    Text('Que Points'),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    FlatButton(
-                      child: Image.asset('img/queid.png'),
-                      onPressed: _showQueId,
-                    ),
-                    Text('Que ID'),
-                  ],
                 ),
               ],
             ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    FlatButton(
-                      child: Image.asset('img/pln.png'),
-                      onPressed: () {},
-                    ),
-                    Text('PLN'),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    FlatButton(
-                      child: Image.asset('img/bpjs.png'),
-                      onPressed: () {},
-                    ),
-                    Text('BPJS'),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    FlatButton(
-                      child: Image.asset('img/more.png'),
-                      onPressed: () {},
-                    ),
-                    Text('See More'),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 32),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(
                 children: <Widget>[
-                  SizedBox(width: 24),
-                  Image.asset('img/small_card_biru.png'),
-                  SizedBox(width: 24),
-                  Image.asset('img/small_card_kuning.png'),
-                  SizedBox(width: 24),
+                  FlatButton(
+                    child: Image.asset('img/transfer.png'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Transfer()));
+                    },
+                  ),
+                  Text('Transfer'),
                 ],
               ),
+              Column(
+                children: <Widget>[
+                  FlatButton(
+                    child: Image.asset('img/point.png'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => QuePoints()));
+                    },
+                  ),
+                  Text('Que Points'),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  FlatButton(
+                    child: Image.asset('img/queid.png'),
+                    onPressed: _showQueId,
+                  ),
+                  Text('Que ID'),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  FlatButton(
+                    child: Image.asset('img/pln.png'),
+                    onPressed: () {},
+                  ),
+                  Text('PLN'),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  FlatButton(
+                    child: Image.asset('img/bpjs.png'),
+                    onPressed: () {},
+                  ),
+                  Text('BPJS'),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  FlatButton(
+                    child: Image.asset('img/more.png'),
+                    onPressed: () {},
+                  ),
+                  Text('See More'),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 32),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: <Widget>[
+                SizedBox(width: 24),
+                Image.asset(
+                  'img/iklan1.png',
+                  height: 200,
+                ),
+                SizedBox(width: 24),
+                Image.asset(
+                  'img/iklan2.png',
+                  height: 200,
+                ),
+                SizedBox(width: 24),
+                Image.asset(
+                  'img/iklan3.png',
+                  height: 200,
+                ),
+                SizedBox(width: 24),
+              ],
             ),
-          ],
-        ),
-      ],
+          ),
+          SizedBox(height: 32),
+          Image.asset(
+            'img/iklan4.jpg',
+            height: 200,
+          ),
+          SizedBox(height: 24),
+          Image.asset(
+            'img/iklan5.jpg',
+            height: 200,
+          ),
+          SizedBox(height: 24),
+          Image.asset(
+            'img/iklan6.jpg',
+            height: 200,
+          ),
+          SizedBox(height: 24),
+        ],
+      ),
     );
   }
 }

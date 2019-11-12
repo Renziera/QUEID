@@ -215,6 +215,7 @@ class DetailPengguna extends StatefulWidget {
 
 class _DetailPenggunaState extends State<DetailPengguna> {
   final TextEditingController _namaController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nikController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
   final TextEditingController _npwpController = TextEditingController();
@@ -223,9 +224,15 @@ class _DetailPenggunaState extends State<DetailPengguna> {
   String _pin;
 
   void _submit() async {
+    QuerySnapshot qs = await Firestore.instance
+        .collection('pengguna')
+        .where('username', isEqualTo: _usernameController.text)
+        .getDocuments();
+    if (qs.documents.isNotEmpty) return;
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     await Firestore.instance.collection('pengguna').document(user.uid).setData({
       'nama': _namaController.text,
+      'username': _usernameController.text,
       'nomor': user.phoneNumber,
       'nik': _nikController.text,
       'tglLahir': Timestamp.fromDate(_tglLahir),
@@ -241,6 +248,7 @@ class _DetailPenggunaState extends State<DetailPengguna> {
 
   void _createPin() async {
     if (_namaController.text.isEmpty ||
+        _usernameController.text.isEmpty ||
         _nikController.text.isEmpty ||
         _alamatController.text.isEmpty ||
         _npwpController.text.isEmpty) return;
@@ -265,6 +273,11 @@ class _DetailPenggunaState extends State<DetailPengguna> {
             TextField(
               controller: _namaController,
               decoration: InputDecoration(labelText: 'Nama Lengkap'),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(labelText: 'Username QUEID'),
             ),
             SizedBox(height: 16),
             FutureBuilder<FirebaseUser>(
